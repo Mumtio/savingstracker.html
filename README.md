@@ -5,21 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Savings Tracker 💰</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&family=Pacifico&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600&family=Press+Start+2P&display=swap');
 
         :root {
             --bg-light: linear-gradient(135deg, #f8d7e8, #f0e2ff);
             --bg-dark: linear-gradient(135deg, #2b2b2b, #1e1e1e);
             --card-light: white;
             --card-dark: #444;
-            --text-light: #ff7fa3;
+            --text-light: #ff5e78;
             --text-dark: #ffd1dc;
-            --progress-light: #98d8f4;
-            --progress-dark: #3a82f7;
+            --progress-light: #ffcc5c;
+            --progress-dark: #ff8b00;
         }
 
         * {
-            font-family: "Quicksand", sans-serif;
+            font-family: "Lexend", sans-serif;
             text-align: center;
             margin: 0;
             padding: 0;
@@ -46,7 +46,7 @@
             padding: 20px;
             border-radius: 20px;
             box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1);
-            max-width: 350px;
+            max-width: 380px;
             width: 90%;
             display: flex;
             flex-direction: column;
@@ -58,14 +58,30 @@
         }
 
         .title {
-            font-size: 22px;
+            font-size: 20px;
             font-weight: bold;
             color: var(--text-light);
-            font-family: "Pacifico", cursive;
-            margin-bottom: 10px;
+            font-family: "Press Start 2P", cursive;
+            margin-bottom: 15px;
         }
 
         .dark-mode .title {
+            color: var(--text-dark);
+        }
+
+        .goal-display {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: var(--text-light);
+            background: #ffe5b4;
+            padding: 8px 15px;
+            border-radius: 15px;
+            display: none;
+        }
+
+        .dark-mode .goal-display {
+            background: #ffb84d;
             color: var(--text-dark);
         }
 
@@ -82,18 +98,24 @@
             padding: 8px;
             border: none;
             border-radius: 8px;
-            background: #ffd1dc;
+            background: #ffccd5;
             font-size: 16px;
             text-align: center;
         }
 
         .progress-container {
             width: 100%;
-            background: #f3f3f3;
+            background: #222;
             height: 20px;
             border-radius: 10px;
             overflow: hidden;
             margin-top: 10px;
+            border: 2px solid #ffb84d;
+        }
+
+        .dark-mode .progress-container {
+            background: #666;
+            border: 2px solid #ff7b00;
         }
 
         .progress-bar {
@@ -110,6 +132,7 @@
         .percentage {
             margin-top: 5px;
             font-weight: bold;
+            font-size: 18px;
             color: var(--text-light);
         }
 
@@ -150,16 +173,19 @@
     <div class="toggle-mode" onclick="toggleMode()">🌙</div>
 
     <div class="card">
-        <div class="title">💰 Savings Tracker 🎀</div>
+        <div class="title">🎮 RPG Savings Tracker 💰</div>
 
-        <div class="input-group">
-            <label>🎯 Goal Amount ($):</label>
+        <div id="goalDisplay" class="goal-display"></div>
+
+        <div class="input-group" id="goalInputGroup">
+            <label>🎯 Set Your Goal ($):</label>
             <input type="number" id="goalAmount" placeholder="Enter your target savings">
+            <button onclick="setGoal()">Confirm Goal</button>
         </div>
 
         <div class="input-group">
-            <label>💵 Amount Saved ($):</label>
-            <input type="number" id="savedAmount" placeholder="Enter how much you've saved">
+            <label>💵 Enter Amount Saved ($):</label>
+            <input type="number" id="savedAmount" placeholder="Enter your savings">
         </div>
 
         <button onclick="updateProgress()">Update Progress</button>
@@ -172,14 +198,26 @@
     </div>
 
     <script>
+        function setGoal() {
+            let goalAmount = document.getElementById("goalAmount").value;
+            if (goalAmount <= 0 || isNaN(goalAmount)) {
+                alert("Please enter a valid goal amount!");
+                return;
+            }
+            localStorage.setItem("goalAmount", goalAmount);
+            document.getElementById("goalDisplay").innerText = "🎯 Goal: $" + goalAmount;
+            document.getElementById("goalDisplay").style.display = "block";
+            document.getElementById("goalInputGroup").style.display = "none";
+        }
+
         function updateProgress() {
-            let goalAmount = parseFloat(document.getElementById("goalAmount").value);
+            let goalAmount = parseFloat(localStorage.getItem("goalAmount"));
             let savedAmount = parseFloat(document.getElementById("savedAmount").value);
             let progressBar = document.getElementById("progressBar");
             let percentageText = document.getElementById("percentageText");
 
             if (isNaN(goalAmount) || isNaN(savedAmount) || goalAmount <= 0) {
-                alert("Please enter valid numbers for both fields.");
+                alert("Please set a goal first!");
                 return;
             }
 
@@ -188,13 +226,22 @@
             percentageText.innerText = percentage + "% Saved 🎯";
 
             if (percentage >= 100) {
-                percentageText.innerText = "🎉 Goal Reached! Congrats!";
+                percentageText.innerText = "🎉 Goal Reached! You did it!";
             }
         }
 
         function toggleMode() {
             document.body.classList.toggle("dark-mode");
         }
+
+        window.onload = () => {
+            let savedGoal = localStorage.getItem("goalAmount");
+            if (savedGoal) {
+                document.getElementById("goalDisplay").innerText = "🎯 Goal: $" + savedGoal;
+                document.getElementById("goalDisplay").style.display = "block";
+                document.getElementById("goalInputGroup").style.display = "none";
+            }
+        };
     </script>
 
 </body>
