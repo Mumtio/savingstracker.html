@@ -5,21 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Savings Tracker 💰</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600&family=Press+Start+2P&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600&family=Indie+Flower&display=swap');
 
         :root {
-            --bg-light: linear-gradient(135deg, #f8d7e8, #f0e2ff);
-            --bg-dark: linear-gradient(135deg, #2b2b2b, #1e1e1e);
+            --bg-light: linear-gradient(135deg, #fef6e4, #ffdde1);
+            --bg-dark: linear-gradient(135deg, #2a2a2a, #1e1e1e);
             --card-light: white;
             --card-dark: #444;
-            --text-light: #ff5e78;
+            --text-light: #ff6b81;
             --text-dark: #ffd1dc;
             --progress-light: #ffcc5c;
             --progress-dark: #ff8b00;
         }
 
         * {
-            font-family: "Lexend", sans-serif;
+            font-family: "Baloo 2", cursive;
             text-align: center;
             margin: 0;
             padding: 0;
@@ -58,10 +58,10 @@
         }
 
         .title {
-            font-size: 20px;
+            font-size: 22px;
             font-weight: bold;
             color: var(--text-light);
-            font-family: "Press Start 2P", cursive;
+            font-family: "Indie Flower", cursive;
             margin-bottom: 15px;
         }
 
@@ -70,14 +70,15 @@
         }
 
         .goal-display {
-            font-size: 22px;
+            font-size: 24px;
             font-weight: bold;
             margin-bottom: 15px;
             color: var(--text-light);
             background: #ffe5b4;
-            padding: 8px 15px;
+            padding: 10px 18px;
             border-radius: 15px;
             display: none;
+            font-family: "Baloo 2", cursive;
         }
 
         .dark-mode .goal-display {
@@ -173,7 +174,7 @@
     <div class="toggle-mode" onclick="toggleMode()">🌙</div>
 
     <div class="card">
-        <div class="title">🎮 RPG Savings Tracker 💰</div>
+        <div class="title">💖 Cozy Savings Tracker 💰</div>
 
         <div id="goalDisplay" class="goal-display"></div>
 
@@ -205,6 +206,7 @@
                 return;
             }
             localStorage.setItem("goalAmount", goalAmount);
+            localStorage.setItem("savedAmount", 0);
             document.getElementById("goalDisplay").innerText = "🎯 Goal: $" + goalAmount;
             document.getElementById("goalDisplay").style.display = "block";
             document.getElementById("goalInputGroup").style.display = "none";
@@ -212,22 +214,22 @@
 
         function updateProgress() {
             let goalAmount = parseFloat(localStorage.getItem("goalAmount"));
-            let savedAmount = parseFloat(document.getElementById("savedAmount").value);
+            let savedAmount = parseFloat(localStorage.getItem("savedAmount")) || 0;
+            let newInput = parseFloat(document.getElementById("savedAmount").value);
             let progressBar = document.getElementById("progressBar");
             let percentageText = document.getElementById("percentageText");
 
-            if (isNaN(goalAmount) || isNaN(savedAmount) || goalAmount <= 0) {
-                alert("Please set a goal first!");
+            if (isNaN(goalAmount) || isNaN(newInput) || newInput <= 0) {
+                alert("Please enter a valid amount!");
                 return;
             }
+
+            savedAmount += newInput;
+            localStorage.setItem("savedAmount", savedAmount);
 
             let percentage = Math.min((savedAmount / goalAmount) * 100, 100).toFixed(2);
             progressBar.style.width = percentage + "%";
             percentageText.innerText = percentage + "% Saved 🎯";
-
-            if (percentage >= 100) {
-                percentageText.innerText = "🎉 Goal Reached! You did it!";
-            }
         }
 
         function toggleMode() {
@@ -235,12 +237,8 @@
         }
 
         window.onload = () => {
-            let savedGoal = localStorage.getItem("goalAmount");
-            if (savedGoal) {
-                document.getElementById("goalDisplay").innerText = "🎯 Goal: $" + savedGoal;
-                document.getElementById("goalDisplay").style.display = "block";
-                document.getElementById("goalInputGroup").style.display = "none";
-            }
+            document.getElementById("goalDisplay").innerText = "🎯 Goal: $" + localStorage.getItem("goalAmount");
+            document.getElementById("goalDisplay").style.display = "block";
         };
     </script>
 
